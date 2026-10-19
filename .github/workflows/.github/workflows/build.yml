@@ -1,0 +1,32 @@
+name: Build JAR
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '17'
+
+    - name: Build with Gradle (installing Gradle for this run)
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: '7.6'
+        arguments: 'build --no-daemon'
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: wraithhackclient-jar
+        path: build/libs/*.jar
